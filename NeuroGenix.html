@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenoPredict AI | Advanced Genomic Analysis</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.2/dist/vis-network.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5e72e4;
+            --secondary: #825ee4;
+            --accent: #f5365c;
+            --success: #2dce89;
+            --warning: #fb6340;
+            --danger: #f5365c;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --darkest: #0f3460;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gray-light: #e9ecef;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: white;
+        }
+        
+        /* Base Button Styles */
+        .btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(94, 114, 228, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        /* Button Effects */
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(94, 114, 228, 0.4);
+        }
+        
+        /* Neon Effect Button */
+        .btn-neon {
+            box-shadow: 0 0 10px rgba(94, 114, 228, 0.8);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            animation: neon-pulse 2s infinite alternate;
+        }
+        
+        @keyframes neon-pulse {
+            0% {
+                box-shadow: 0 0 10px rgba(94, 114, 228, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(94, 114, 228, 1), 0 0 30px rgba(94, 114, 228, 0.5);
+            }
+        }
+        
+        /* Glow Effect Button */
+        .btn-glow {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-glow:hover {
+            box-shadow: 0 0 15px rgba(94, 114, 228, 0.8);
+        }
+        
+        /* Border Animation Button */
+        .btn-border-anim {
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+        
+        .btn-border-anim::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: -1;
+            margin: -2px;
+            border-radius: inherit;
+            background: var(--gradient);
+        }
+        
+        .btn-border-anim:hover::before {
+            animation: border-rotate 2s linear infinite;
+        }
+        
+        @keyframes border-rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Ripple Effect Button */
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-ripple::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 1%, transparent 1%) center/15000%;
+            opacity: 0;
+            transition: opacity 0.5s, background-size 0.5s;
+        }
+        
+        .btn-ripple:hover::after {
+            opacity: 1;
+            background-size: 10000%;
+        }
+        
+        .btn-ripple:active::after {
+            background-size: 100%;
+            transition: background-size 0s;
+        }
+        
+        /* Secondary Button */
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Small Button */
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            min-width: auto;
+        }
+        
+        /* Google Sign-In Button */
+        .google-signin-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: #444;
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            min-width: 120px;
+        }
+        
+        .google-signin-btn:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transform: translateY(-1px);
+        }
+        
+        .google-signin-btn img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        
+        /* Button Container for consistent sizing */
+        .btn-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--gray-light);
+        }
+        
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .section {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .input-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        #progress-container {
+            display: none;
+            margin: 2rem 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress {
+            height: 100%;
+            width: 0;
+            background: var(--gradient);
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .dna-animation {
+            width: 100%;
+            height: 200px;
+            margin: 2rem 0;
+        }
+        
+        .visualization {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        
+        .disease-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+        
+        .disease-card.high-risk {
+            border-left: 4px solid #f5365c;
+            background: rgba(245, 54, 92, 0.1);
+        }
+        
+        .disease-card.moderate-risk {
+            border-left: 4px solid #fb6340;
+            background: rgba(251, 99, 64, 0.1);
+        }
+        
+        .disease-card.low-risk {
+            border-left: 4px solid #2dce89;
+            background: rgba(45, 206, 137, 0.1);
+        }
+        
+        .risk-meter {
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #2dce89, #fb6340, #f5365c);
+            margin: 10px 0;
+            position: relative;
+        }
+        
+        .risk-indicator {
+            position: absolute;
+            top: -5px;
+            width: 3px;
+            height: 20px;
+            background: white;
+            transform: translateX(-50%);
+        }
+        
+        .gene-variants {
+            margin-top: 15px;
+        }
+        
+        .variant {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .variant.pathogenic {
+            background: rgba(245, 54, 92, 0.2);
+            color: #f5365c;
+        }
+        
+        .variant.benign {
+            background: rgba(45, 206, 137, 0.2);
+            color: #2dce89;
+        }
+        
+        .variant.uncertain {
+            background: rgba(254, 202, 87, 0.2);
+            color: #feca57;
+        }
+        
+        .solution-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--success);
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: var(--darker);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .auth-left {
+            flex: 1;
+            background: var(--gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .auth-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: var(--dark);
+        }
+        
+        .auth-form {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .auth-title {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .auth-title h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .auth-title p {
+            color: var(--gray);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--gray);
+        }
+        
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        /* Google Sign-In Customization */
+        #g_id_onload {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .g_id_signin {
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .g_id_signin > div {
+            width: 100% !important;
+            border-radius: 50px !important;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .auth-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="welcome-page">
+        <div class="particles" id="particles"></div>
+        <header>
+            <nav class="container">
+                <a href="#" class="logo">Geno<span>Predict</span></a>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#analyze">Analyze</a>
+                    <a href="#solutions">Solutions</a>
+                    <a href="#" id="login-btn">Login</a>
+                </div>
+                <button class="btn btn-neon" id="get-started-btn">Get Started</button>
+            </nav>
+        </header>
+        
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Advanced Genomic Analysis Powered by AI</h1>
+                    <p>Discover your genetic risks and personalized solutions with our cutting-edge genomic prediction platform.</p>
+                    <div class="btn-container">
+                        <button class="btn btn-glow" id="hero-analyze-btn">Analyze Your Genome</button>
+                        <button class="btn btn-secondary" id="learn-more-btn">Learn More</button>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-bg"></div>
+        </section>
+        
+        <section class="section" id="features">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Precision Genomic Insights</h2>
+                    <p>Our AI-powered platform delivers comprehensive analysis of your genetic data with unmatched accuracy.</p>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <div class="card">
+                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_vybwn7df.json" background="transparent" speed="1" style="width: 100px; height: 100px; margin: 0 auto;" loop autoplay></lottie-player>
+                        <h3 style="text-align: center; margin: 1rem 0;">Disease Prediction</h3>
+                        <p style="text-align: center;">Accurate risk assessment for hundreds of genetic disorders with detailed clinical interpretations.</p>
+                        <div class="btn-container" style="justify-content: center;">
+                            <button class="btn btn-small btn-border-anim">Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_6wutsrox.json" background="transparent" speed="1" style="width: 100px; height: 100px; margin: 0 auto;" loop autoplay></lottie-player>
+                        <h3 style="text-align: center; margin: 1rem 0;">Personalized Solutions</h3>
+                        <p style="text-align: center;">Tailored recommendations based on your unique genetic profile and risk factors.</p>
+                        <div class="btn-container" style="justify-content: center;">
+                            <button class="btn btn-small btn-ripple">Details</button>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_jbrw3d5x.json" background="transparent" speed="1" style="width: 100px; height: 100px; margin: 0 auto;" loop autoplay></lottie-player>
+                        <h3 style="text-align: center; margin: 1rem 0;">Advanced Analytics</h3>
+                        <p style="text-align: center;">Interactive visualizations and deep genomic analysis powered by machine learning.</p>
+                        <div class="btn-container" style="justify-content: center;">
+                            <button class="btn btn-small btn-glow">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <div id="auth-page" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-left">
+                <div style="max-width: 500px;">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Welcome to GenoPredict AI</h1>
+                    <p style="margin-bottom: 2rem;">Sign in to access your genomic analysis or continue as guest to try our demo.</p>
+                    <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_ndnQRd.json" background="transparent" speed="1" style="width: 100%; height: 300px;" loop autoplay></lottie-player>
+                </div>
+            </div>
+            <div class="auth-right">
+                <div class="auth-form">
+                    <div class="auth-title">
+                        <h2>Sign In</h2>
+                        <p>Enter your credentials to access your account</p>
+                    </div>
+                    
+                    <!-- Google Sign-In Button -->
+                    <div id="g_id_onload"
+                        data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                        data-context="signin"
+                        data-ux_mode="popup"
+                        data-callback="handleGoogleSignIn"
+                        data-auto_prompt="false">
+                    </div>
+                    
+                    <div class="g_id_signin"
+                        data-type="standard"
+                        data-shape="pill"
+                        data-theme="outline"
+                        data-text="signin_with"
+                        data-size="large"
+                        data-logo_alignment="left">
+                    </div>
+                    
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        <div style="height: 1px; background: rgba(255, 255, 255, 0.1); position: relative; margin: 1.5rem 0;">
+                            <span style="background: var(--dark); padding: 0 1rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">OR</span>
+                        </div>
+                    </div>
+                    
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-glow" style="width: 100%;">Sign In</button>
+                    </form>
+                    
+                    <div class="auth-footer">
+                        Don't have an account? <a href="#" id="signup-link">Sign up</a>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <button class="btn btn-secondary" id="guest-btn" style="width: 100%;">Continue as Guest</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="signup-page" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-left">
+                <div style="max-width: 500px;">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Create Your Account</h1>
+                    <p style="margin-bottom: 2rem;">Join GenoPredict AI to unlock personalized genomic insights.</p>
+                    <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_ndnQRd.json" background="transparent" speed="1" style="width: 100%; height: 300px;" loop autoplay></lottie-player>
+                </div>
+            </div>
+            <div class="auth-right">
+                <div class="auth-form">
+                    <div class="auth-title">
+                        <h2>Sign Up</h2>
+                        <p>Create your account to get started</p>
+                    </div>
+                    
+                    <form id="signup-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="signup-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="signup-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="signup-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" id="signup-confirm" required>
+                        </div>
+                        <button type="submit" class="btn btn-ripple" style="width: 100%;">Create Account</button>
+                    </form>
+                    
+                    <div class="auth-footer">
+                        Already have an account? <a href="#" id="login-link">Sign in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="analysis-page" style="display: none;">
+        <header>
+            <nav class="container">
+                <a href="#" class="logo">Geno<span>Predict</span></a>
+                <div class="nav-links">
+                    <a href="#" id="analysis-home-link">Home</a>
+                    <a href="#" id="analysis-logout-link">Logout</a>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <span id="user-email" style="font-weight: 500;"></span>
+                    <img id="user-avatar" src="" style="width: 32px; height: 32px; border-radius: 50%; display: none;">
+                </div>
+            </nav>
+        </header>
+        
+        <section class="section" id="analyze" style="padding-top: 6rem;">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Genomic Analysis</h2>
+                    <p>Upload your genomic data or enter a DNA sequence for comprehensive analysis</p>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">🧬 Sequence Input</h3>
+                    
+                    <div class="input-group">
+                        <label>Sequence Name</label>
+                        <input type="text" id="seq-name" placeholder="My Genome">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>DNA Sequence</label>
+                        <textarea id="sequence" placeholder="Enter DNA sequence (ATCG...) or upload a file"></textarea>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button class="btn btn-secondary" id="upload-btn">Upload File</button>
+                        <input type="file" id="file-input" style="display: none;" accept=".fasta,.fa,.txt,.vcf">
+                        <button class="btn btn-secondary" id="sample-btn">Use Sample Data</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">🩺 Disease Prediction Options</h3>
+                    
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="predict-diseases" checked> 
+                            Enable disease risk prediction
+                        </label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Population group:</label>
+                        <select id="population-group">
+                            <option value="global">Global</option>
+                            <option value="european">European</option>
+                            <option value="african">African</option>
+                            <option value="east_asian">East Asian</option>
+                            <option value="south_asian">South Asian</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Include rare variants:</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <label><input type="radio" name="rare-variants" value="yes" checked> Yes</label>
+                            <label><input type="radio" name="rare-variants" value="no"> No</label>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Analysis depth:</label>
+                        <select id="analysis-depth">
+                            <option value="basic">Basic</option>
+                            <option value="standard" selected>Standard</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="comprehensive">Comprehensive</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-neon" id="analyze-btn" style="width: 100%;">Analyze Sequence</button>
+                
+                <div id="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progress-bar"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">Initializing analysis...</div>
+                    <div class="dna-animation">
+                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_vybwn7df.json" background="transparent" speed="1" style="width: 100%; height: 100%;" loop autoplay></lottie-player>
+                    </div>
+                </div>
+                
+                <div id="results" style="display: none; margin-top: 3rem;">
+                    <div class="card">
+                        <h3 style="margin-bottom: 1rem;">🧬 Sequence Overview</h3>
+                        <div id="sequence-overview" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <div style="background: rgba(94, 114, 228, 0.1); padding: 1rem; border-radius: 10px;">
+                                <div style="font-size: 0.8rem; color: var(--gray);">Sequence Length</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="seq-length">0</div>
+                            </div>
+                            <div style="background: rgba(45, 206, 137, 0.1); padding: 1rem; border-radius: 10px;">
+                                <div style="font-size: 0.8rem; color: var(--gray);">Variants Detected</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="variant-count">0</div>
+                            </div>
+                            <div style="background: rgba(251, 99, 64, 0.1); padding: 1rem; border-radius: 10px;">
+                                <div style="font-size: 0.8rem; color: var(--gray);">Pathogenic Variants</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="pathogenic-count">0</div>
+                            </div>
+                            <div style="background: rgba(245, 54, 92, 0.1); padding: 1rem; border-radius: 10px;">
+                                <div style="font-size: 0.8rem; color: var(--gray);">Disease Risks</div>
+                                <div style="font-size: 1.5rem; font-weight: bold;" id="disease-count">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 2rem;">
+                        <h3 style="margin-bottom: 1rem;">📊 Variant Distribution</h3>
+                        <div class="visualization" id="variant-chart"></div>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 2rem;">
+                        <h3 style="margin-bottom: 1rem;">🩺 Disease Risk Prediction</h3>
+                        
+                        <div id="disease-results">
+                        </div>
+                        
+                        <div class="input-group" style="margin-top: 1rem;">
+                            <label>Filter by risk level:</label>
+                            <select id="risk-filter">
+                                <option value="all">All risks</option>
+                                <option value="high">High risk only</option>
+                                <option value="moderate">Moderate risk only</option>
+                                <option value="low">Low risk only</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 2rem;">
+                        <h3 style="margin-bottom: 1rem;">💡 Personalized Solutions</h3>
+                        
+                        <div id="solution-results">
+                            <div class="solution-card">
+                                <h4 style="margin-bottom: 0.5rem;">Precision Medicine Recommendations</h4>
+                                <p>Based on your genetic profile, these medications may be most effective with minimal side effects:</p>
+                                <ul style="margin-top: 0.5rem; padding-left: 20px;">
+                                    <li>Statin therapy with atorvastatin for cardiovascular risk reduction</li>
+                                    <li>Metformin for potential diabetes prevention</li>
+                                    <li>Personalized dosing recommendations for warfarin based on CYP2C9/VKORC1 variants</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h4 style="margin-bottom: 0.5rem;">Lifestyle Interventions</h4>
+                                <p>These lifestyle modifications can help mitigate your genetic risks:</p>
+                                <ul style="margin-top: 0.5rem; padding-left: 20px;">
+                                    <li>Mediterranean diet pattern to reduce cardiovascular and Alzheimer's risk</li>
+                                    <li>High-intensity interval training 3-4x/week for metabolic health</li>
+                                    <li>Sleep optimization (7-8 hours/night) to support cognitive health</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h4 style="margin-bottom: 0.5rem;">Screening Recommendations</h4>
+                                <p>Enhanced screening based on your elevated risks:</p>
+                                <ul style="margin-top: 0.5rem; padding-left: 20px;">
+                                    <li>Annual mammogram starting at age 40 (or 10 years earlier than youngest affected relative)</li>
+                                    <li>Colonoscopy every 5 years beginning at age 45</li>
+                                    <li>Annual cognitive screening beginning at age 55</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 2rem;">
+                        <h3 style="margin-bottom: 1rem;">🧬 Gene Network Analysis</h3>
+                        <div class="visualization" id="gene-network"></div>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button class="btn btn-glow" id="download-report-btn" style="width: 100%;">
+                            Download Full Report
+                        </button>
+                        <button class="btn btn-secondary" id="share-results-btn" style="width: 100%;">
+                            Share Results
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        const diseasePredictions = [
+            {
+                name: "Breast Cancer (BRCA1/2)",
+                risk: 0.78,
+                category: "high",
+                genes: ["BRCA1", "BRCA2"],
+                variants: [
+                    { gene: "BRCA1", variant: "c.5266dupC", significance: "pathogenic" },
+                    { gene: "BRCA2", variant: "p.Asn372His", significance: "uncertain" }
+                ],
+                description: "Increased risk due to pathogenic BRCA1 variant and family history markers"
+            },
+            {
+                name: "Alzheimer's Disease (APOE)",
+                risk: 0.42,
+                category: "moderate",
+                genes: ["APOE"],
+                variants: [
+                    { gene: "APOE", variant: "ε4/ε4", significance: "pathogenic" }
+                ],
+                description: "APOE ε4 homozygous genotype associated with moderate increased risk"
+            },
+            {
+                name: "Type 2 Diabetes",
+                risk: 0.35,
+                category: "moderate",
+                genes: ["TCF7L2", "PPARG", "KCNJ11"],
+                variants: [
+                    { gene: "TCF7L2", variant: "rs7903146(T)", significance: "pathogenic" },
+                    { gene: "PPARG", variant: "rs1801282(C)", significance: "benign" }
+                ],
+                description: "Multiple risk alleles detected with moderate combined effect"
+            },
+            {
+                name: "Cystic Fibrosis",
+                risk: 0.02,
+                category: "low",
+                genes: ["CFTR"],
+                variants: [
+                    { gene: "CFTR", variant: "p.Arg117His", significance: "uncertain" }
+                ],
+                description: "Carrier status detected with no pathogenic variants"
+            },
+            {
+                name: "Parkinson's Disease",
+                risk: 0.18,
+                category: "low",
+                genes: ["LRRK2", "GBA"],
+                variants: [
+                    { gene: "GBA", variant: "p.N370S", significance: "pathogenic" }
+                ],
+                description: "Slightly elevated risk due to GBA variant"
+            },
+            {
+                name: "Colorectal Cancer",
+                risk: 0.31,
+                category: "moderate",
+                genes: ["APC", "MLH1"],
+                variants: [
+                    { gene: "APC", variant: "rs1801155", significance: "uncertain" }
+                ],
+                description: "Moderate risk based on family history and genetic markers"
+            },
+            {
+                name: "Hypertension",
+                risk: 0.45,
+                category: "moderate",
+                genes: ["ACE", "AGTR1"],
+                variants: [
+                    { gene: "ACE", variant: "I/D polymorphism", significance: "pathogenic" }
+                ],
+                description: "Multiple genetic factors contributing to blood pressure regulation"
+            }
+        ];
+        
+        let currentUser = null;
+        let googleAuthResponse = null;
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            initVanta();
+            setupEventListeners();
+            showWelcomePage();
+        });
+        
+        function initVanta() {
+            VANTA.NET({
+                el: "#particles",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0x5e72e4,
+                backgroundColor: 0x1a1a2e,
+                points: 12.00,
+                maxDistance: 22.00,
+                spacing: 17.00
+            });
+        }
+        
+        function setupEventListeners() {
+            document.getElementById("get-started-btn").addEventListener("click", showAuthPage);
+            document.getElementById("hero-analyze-btn").addEventListener("click", showAuthPage);
+            document.getElementById("login-btn").addEventListener("click", showAuthPage);
+            document.getElementById("guest-btn").addEventListener("click", startAsGuest);
+            document.getElementById("signup-link").addEventListener("click", showSignupPage);
+            document.getElementById("login-link").addEventListener("click", showAuthPage);
+            document.getElementById("analysis-home-link").addEventListener("click", showWelcomePage);
+            document.getElementById("analysis-logout-link").addEventListener("click", logout);
+            document.getElementById("learn-more-btn").addEventListener("click", function() {
+                window.scrollTo({
+                    top: document.getElementById("features").offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+            
+            document.getElementById("login-form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                login();
+            });
+            
+            document.getElementById("signup-form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                signup();
+            });
+            
+            document.getElementById("upload-btn").addEventListener("click", function() {
+                document.getElementById("file-input").click();
+            });
+            
+            document.getElementById("file-input").addEventListener("change", handleFileUpload);
+            document.getElementById("sample-btn").addEventListener("click", useSampleData);
+            document.getElementById("analyze-btn").addEventListener("click", analyzeSequence);
+            document.getElementById("download-report-btn").addEventListener("click", downloadFullReport);
+            document.getElementById("share-results-btn").addEventListener("click", shareResults);
+        }
+        
+        // Google Sign-In Handler
+        function handleGoogleSignIn(response) {
+            googleAuthResponse = response;
+            
+            // Verify the Google ID token on your server in a real application
+            // This is just a client-side demo
+            const profile = response.credential ? parseJwt(response.credential) : null;
+            
+            if (profile) {
+                currentUser = {
+                    email: profile.email,
+                    name: profile.name,
+                    picture: profile.picture,
+                    googleId: profile.sub
+                };
+                
+                // Check if email is from allowed domain (in a real app, you'd check this on the server)
+                if (isAllowedEmail(profile.email)) {
+                    showAnalysisPage();
+                    updateUserDisplay();
+                } else {
+                    alert("Please sign in with an authorized Google account.");
+                    logout();
+                }
+            }
+        }
+        
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        function isAllowedEmail(email) {
+            // In a real application, you would check against a list of allowed domains
+            // For this demo, we'll allow all Google emails
+            return email.endsWith('@gmail.com') || 
+                   email.endsWith('@googlemail.com') || 
+                   email.match(/@[a-zA-Z0-9-]+\.google\.com$/);
+        }
+        
+        function updateUserDisplay() {
+            if (currentUser) {
+                document.getElementById("user-email").textContent = currentUser.email;
+                
+                if (currentUser.picture) {
+                    const avatar = document.getElementById("user-avatar");
+                    avatar.src = currentUser.picture;
+                    avatar.style.display = "block";
+                }
+            } else {
+                document.getElementById("user-email").textContent = "Guest User";
+                document.getElementById("user-avatar").style.display = "none";
+            }
+        }
+        
+        function showWelcomePage() {
+            document.getElementById("welcome-page").style.display = "block";
+            document.getElementById("auth-page").style.display = "none";
+            document.getElementById("signup-page").style.display = "none";
+            document.getElementById("analysis-page").style.display = "none";
+        }
+        
+        function showAuthPage() {
+            document.getElementById("welcome-page").style.display = "none";
+            document.getElementById("auth-page").style.display = "block";
+            document.getElementById("signup-page").style.display = "none";
+            document.getElementById("analysis-page").style.display = "none";
+        }
+        
+        function showSignupPage() {
+            document.getElementById("welcome-page").style.display = "none";
+            document.getElementById("auth-page").style.display = "none";
+            document.getElementById("signup-page").style.display = "block";
+            document.getElementById("analysis-page").style.display = "none";
+        }
+        
+        function showAnalysisPage() {
+            document.getElementById("welcome-page").style.display = "none";
+            document.getElementById("auth-page").style.display = "none";
+            document.getElementById("signup-page").style.display = "none";
+            document.getElementById("analysis-page").style.display = "block";
+            
+            updateUserDisplay();
+        }
+        
+        function login() {
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+            
+            if (!email || !password) {
+                alert("Please enter both email and password");
+                return;
+            }
+            
+            // In a real application, you would validate credentials with your server
+            currentUser = { email };
+            showAnalysisPage();
+        }
+        
+        function signup() {
+            const name = document.getElementById("signup-name").value;
+            const email = document.getElementById("signup-email").value;
+            const password = document.getElementById("signup-password").value;
+            const confirm = document.getElementById("signup-confirm").value;
+            
+            if (!name || !email || !password || !confirm) {
+                alert("Please fill all fields");
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert("Passwords don't match");
+                return;
+            }
+            
+            // In a real application, you would send this data to your server
+            currentUser = { email, name };
+            showAnalysisPage();
+        }
+        
+        function startAsGuest() {
+            currentUser = null;
+            showAnalysisPage();
+        }
+        
+        function logout() {
+            // Sign out from Google if signed in
+            if (googleAuthResponse && googleAuthResponse.clientId) {
+                google.accounts.id.revoke(googleAuthResponse.clientId, done => {
+                    console.log('Google session revoked');
+                });
+            }
+            
+            currentUser = null;
+            googleAuthResponse = null;
+            showWelcomePage();
+        }
+        
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("sequence").value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+        
+        function useSampleData() {
+            const sampleData = ">Sample Genome\nATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG";
+            document.getElementById("sequence").value = sampleData;
+            document.getElementById("seq-name").value = "Sample Genome";
+        }
+        
+        function analyzeSequence() {
+            const sequence = document.getElementById("sequence").value;
+            const seqName = document.getElementById("seq-name").value || "Unnamed Sequence";
+            const predictDiseases = document.getElementById("predict-diseases").checked;
+            
+            if (!sequence) {
+                alert("Please enter a sequence to analyze");
+                return;
+            }
+            
+            const btn = document.getElementById("analyze-btn");
+            btn.textContent = "Analyzing...";
+            btn.disabled = true;
+            
+            document.getElementById("progress-container").style.display = "block";
+            document.getElementById("results").style.display = "none";
+            
+            simulateAnalysisProgress();
+        }
+        
+        function simulateAnalysisProgress() {
+            let progress = 0;
+            const progressBar = document.getElementById("progress-bar");
+            const progressText = document.getElementById("progress-text");
+            
+            const stages = [
+                "Initializing analysis...",
+                "Processing sequence data...",
+                "Identifying variants...",
+                "Annotating genomic features...",
+                "Calculating disease risks...",
+                "Generating visualizations...",
+                "Finalizing report..."
+            ];
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = `${progress}%`;
+                
+                const stageIndex = Math.min(Math.floor(progress / (100 / stages.length)), stages.length - 1);
+                progressText.textContent = stages[stageIndex];
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    showAnalysisResults();
+                }
+            }, 300);
+        }
+        
+        function showAnalysisResults() {
+            document.getElementById("analyze-btn").textContent = "Analyze Sequence";
+            document.getElementById("analyze-btn").disabled = false;
+            document.getElementById("progress-container").style.display = "none";
+            document.getElementById("results").style.display = "block";
+            
+            const sequence = document.getElementById("sequence").value.replace(/>.*\n/g, "").replace(/\n/g, "");
+            document.getElementById("seq-length").textContent = sequence.length;
+            document.getElementById("variant-count").textContent = Math.floor(sequence.length / 1000);
+            document.getElementById("pathogenic-count").textContent = Math.floor(sequence.length / 5000);
+            document.getElementById("disease-count").textContent = diseasePredictions.length;
+            
+            showVariantChart();
+            showDiseasePredictions();
+            showGeneNetwork();
+        }
+        
+        function showVariantChart() {
+            const variantData = [
+                { type: "Synonymous", count: Math.floor(Math.random() * 50) + 20 },
+                { type: "Missense", count: Math.floor(Math.random() * 30) + 10 },
+                { type: "Nonsense", count: Math.floor(Math.random() * 10) + 5 },
+                { type: "Frameshift", count: Math.floor(Math.random() * 5) + 1 },
+                { type: "Splice Site", count: Math.floor(Math.random() * 8) + 2 }
+            ];
+            
+            const data = [{
+                values: variantData.map(v => v.count),
+                labels: variantData.map(v => v.type),
+                type: "pie",
+                marker: {
+                    colors: ["#5e72e4", "#2dce89", "#f5365c", "#fb6340", "#feca57"]
+                },
+                textinfo: "label+percent",
+                hoverinfo: "label+value",
+                hole: 0.4,
+                rotation: 45
+            }];
+            
+            const layout = {
+                margin: { t: 0, b: 0, l: 0, r: 0 },
+                paper_bgcolor: "rgba(0,0,0,0)",
+                plot_bgcolor: "rgba(0,0,0,0)",
+                showlegend: false
+            };
+            
+            Plotly.newPlot("variant-chart", data, layout);
+        }
+        
+        function showDiseasePredictions() {
+            const container = document.getElementById("disease-results");
+            container.innerHTML = "";
+            
+            diseasePredictions.sort((a, b) => b.risk - a.risk);
+            
+            diseasePredictions.forEach(disease => {
+                const diseaseCard = document.createElement("div");
+                diseaseCard.className = `disease-card ${disease.category}-risk`;
+                
+                const riskPercent = Math.round(disease.risk * 100);
+                const riskPosition = disease.risk * 100;
+                
+                diseaseCard.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h4 style="margin: 0;">${disease.name}</h4>
+                        <span style="font-weight: bold; color: ${
+                            disease.category === 'high' ? '#f5365c' : 
+                            disease.category === 'moderate' ? '#fb6340' : '#2dce89'
+                        }">${riskPercent}% risk</span>
+                    </div>
+                    
+                    <div class="risk-meter">
+                        <div class="risk-indicator" style="left: ${riskPosition}%;"></div>
+                    </div>
+                    
+                    <p style="margin: 10px 0; font-size: 14px;">${disease.description}</p>
+                    
+                    <div class="gene-variants">
+                        <div style="font-size: 12px; margin-bottom: 5px; color: var(--gray);">Key variants:</div>
+                        ${disease.variants.map(v => `
+                            <span class="variant ${v.significance}">
+                                ${v.gene}:${v.variant}
+                            </span>
+                        `).join('')}
+                    </div>
+                    
+                    <button class="btn btn-secondary btn-small" style="margin-top: 10px; width: 100%;" 
+                            onclick="showDiseaseDetails('${disease.name}')">
+                        View detailed report
+                    </button>
+                `;
+                
+                container.appendChild(diseaseCard);
+            });
+            
+            document.getElementById("risk-filter").addEventListener("change", function() {
+                const filterValue = this.value;
+                const cards = document.querySelectorAll(".disease-card");
+                
+                cards.forEach(card => {
+                    if (filterValue === "all") {
+                        card.style.display = "block";
+                    } else {
+                        const matchesFilter = card.classList.contains(`${filterValue}-risk`);
+                        card.style.display = matchesFilter ? "block" : "none";
+                    }
+                });
+            });
+        }
+        
+        function showGeneNetwork() {
+            const genes = new Set();
+            diseasePredictions.forEach(disease => {
+                disease.genes.forEach(gene => genes.add(gene));
+            });
+            
+            const nodes = Array.from(genes).map(gene => ({ id: gene, label: gene }));
+            const edges = [];
+            
+            diseasePredictions.forEach(disease => {
+                if (disease.genes.length > 1) {
+                    for (let i = 0; i < disease.genes.length - 1; i++) {
+                        for (let j = i + 1; j < disease.genes.length; j++) {
+                            edges.push({
+                                from: disease.genes[i],
+                                to: disease.genes[j],
+                                label: disease.name,
+                                color: disease.category === 'high' ? '#f5365c' : 
+                                       disease.category === 'moderate' ? '#fb6340' : '#2dce89'
+                            });
+                        }
+                    }
+                }
+            });
+            
+            const data = { nodes, edges };
+            const options = {
+                nodes: {
+                    shape: "dot",
+                    size: 20,
+                    font: {
+                        size: 14,
+                        color: "#ffffff"
+                    },
+                    borderWidth: 2
+                },
+                edges: {
+                    width: 2,
+                    smooth: {
+                        type: "continuous"
+                    },
+                    font: {
+                        size: 10,
+                        color: "#ffffff",
+                        strokeWidth: 0
+                    }
+                },
+                physics: {
+                    barnesHut: {
+                        gravitationalConstant: -2000,
+                        centralGravity: 0.3,
+                        springLength: 200
+                    }
+                },
+                interaction: {
+                    hover: true,
+                    tooltipDelay: 200
+                }
+            };
+            
+            new vis.Network(document.getElementById("gene-network"), data, options);
+        }
+        
+        function showDiseaseDetails(diseaseName) {
+            const disease = diseasePredictions.find(d => d.name === diseaseName);
+            if (!disease) return;
+            
+            const modal = document.createElement("div");
+            modal.className = "modal";
+            
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 style="margin: 0;">${disease.name}</h2>
+                        <button class="modal-close" onclick="this.closest('.modal').remove()">×</button>
+                    </div>
+                    
+                    <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
+                        <div>
+                            <div style="font-size: 14px; color: var(--gray);">Risk Level</div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: ${
+                                disease.category === 'high' ? '#f5365c' : 
+                                disease.category === 'moderate' ? '#fb6340' : '#2dce89'
+                            }">${disease.category.toUpperCase()} RISK</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 14px; color: var(--gray);">Probability</div>
+                            <div style="font-size: 1.5rem; font-weight: bold;">${Math.round(disease.risk * 100)}%</div>
+                        </div>
+                    </div>
+                    
+                    <h4>Associated Genes</h4>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                        ${disease.genes.map(gene => `
+                            <span style="background: rgba(94, 114, 228, 0.2); padding: 5px 10px; border-radius: 20px;">${gene}</span>
+                        `).join('')}
+                    </div>
+                    
+                    <h4>Detected Variants</h4>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--gray-light);">
+                                <th style="text-align: left; padding: 10px;">Gene</th>
+                                <th style="text-align: left; padding: 10px;">Variant</th>
+                                <th style="text-align: left; padding: 10px;">Significance</th>
+                                <th style="text-align: left; padding: 10px;">Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${disease.variants.map(v => `
+                                <tr style="border-bottom: 1px solid var(--gray-light);">
+                                    <td style="padding: 10px;">${v.gene}</td>
+                                    <td style="padding: 10px;">${v.variant}</td>
+                                    <td style="padding: 10px; color: ${
+                                        v.significance === 'pathogenic' ? '#f5365c' : 
+                                        v.significance === 'benign' ? '#2dce89' : '#feca57'
+                                    }">${v.significance.toUpperCase()}</td>
+                                    <td style="padding: 10px;">${(Math.random() * 5).toFixed(2)}%</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    
+                    <h4>Clinical Significance</h4>
+                    <p style="margin-bottom: 1.5rem;">${getDiseaseDescription(disease.name)}</p>
+                    
+                    <h4>Recommended Actions</h4>
+                    <ul style="margin-bottom: 1.5rem; padding-left: 20px;">
+                        ${getRecommendedActions(disease.name, disease.category).map(action => `
+                            <li style="margin-bottom: 5px;">${action}</li>
+                        `).join('')}
+                    </ul>
+                    
+                    <button class="btn btn-glow" style="width: 100%;" onclick="downloadDiseaseReport('${disease.name}')">
+                        Download Full Report
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        function getDiseaseDescription(diseaseName) {
+            const descriptions = {
+                "Breast Cancer (BRCA1/2)": "Pathogenic variants in BRCA1 and BRCA2 genes significantly increase lifetime risk of breast and ovarian cancers. BRCA1 variants are associated with 55-65% lifetime risk of breast cancer and 39% risk of ovarian cancer. BRCA2 variants confer 45% breast cancer risk and 11-17% ovarian cancer risk.",
+                "Alzheimer's Disease (APOE)": "The APOE ε4 allele is the strongest genetic risk factor for late-onset Alzheimer's disease. Homozygous ε4/ε4 individuals have a 10-15 times increased risk compared to non-carriers, with earlier average onset age of 68 years.",
+                "Type 2 Diabetes": "Multiple genetic variants contribute to type 2 diabetes risk. The TCF7L2 rs7903146(T) variant is associated with impaired insulin secretion and 1.4-fold increased risk. Combined with other risk factors, genetic predisposition can significantly increase diabetes susceptibility.",
+                "Cystic Fibrosis": "CFTR gene variants can cause cystic fibrosis when two pathogenic variants are present. Carrier status with one pathogenic variant does not cause disease but may have implications for reproductive planning and potential mild clinical manifestations.",
+                "Parkinson's Disease": "GBA variants are associated with increased risk of Parkinson's disease, particularly the p.N370S variant which shows a 2-3 fold increased risk. The mechanism may involve impaired lysosomal function and alpha-synuclein accumulation.",
+                "Colorectal Cancer": "Genetic predisposition to colorectal cancer involves multiple genes including APC and mismatch repair genes. Risk is modified by environmental factors and family history, with lifetime risk up to 50% for some genetic profiles.",
+                "Hypertension": "Blood pressure regulation involves complex genetic interactions. The ACE I/D polymorphism affects angiotensin-converting enzyme levels, influencing vascular tone and sodium balance, contributing to hypertension risk."
+            };
+            
+            return descriptions[diseaseName] || "No detailed description available for this condition.";
+        }
+        
+        function getRecommendedActions(diseaseName, riskLevel) {
+            const actions = {
+                "Breast Cancer (BRCA1/2)": {
+                    high: [
+                        "Consult with a genetic counselor",
+                        "Increased surveillance with annual MRI and mammogram starting at age 25-30",
+                        "Consider risk-reducing medications (tamoxifen, raloxifene)",
+                        "Discuss risk-reducing surgery options (mastectomy, oophorectomy)",
+                        "Inform first-degree relatives about potential risk"
+                    ],
+                    moderate: [
+                        "Consult with a genetic counselor",
+                        "Standard breast cancer screening",
+                        "Lifestyle modifications (maintain healthy weight, limit alcohol)",
+                        "Consider enhanced surveillance if family history is significant"
+                    ],
+                    low: [
+                        "Standard cancer screening recommendations",
+                        "Maintain healthy lifestyle",
+                        "Reassess if family history changes"
+                    ]
+                },
+                "Alzheimer's Disease (APOE)": {
+                    high: [
+                        "Cognitive assessment with a neurologist",
+                        "Implement lifestyle interventions (Mediterranean diet, regular exercise)",
+                        "Manage cardiovascular risk factors",
+                        "Consider participating in clinical trials",
+                        "Advance care planning"
+                    ],
+                    moderate: [
+                        "Regular cognitive screening",
+                        "Lifestyle interventions (healthy diet, physical activity)",
+                        "Manage vascular risk factors (hypertension, diabetes)",
+                        "Cognitive training exercises"
+                    ],
+                    low: [
+                        "General brain health recommendations",
+                        "Regular physical activity",
+                        "Cognitive stimulation activities"
+                    ]
+                },
+                "Type 2 Diabetes": {
+                    high: [
+                        "Annual diabetes screening",
+                        "Lifestyle intervention program",
+                        "Monitor HbA1c every 6 months",
+                        "Weight management",
+                        "Early intervention for prediabetes"
+                    ],
+                    moderate: [
+                        "Biannual glucose monitoring",
+                        "Diet and exercise modifications",
+                        "Maintain healthy weight",
+                        "Monitor for symptoms"
+                    ],
+                    low: [
+                        "Standard diabetes prevention guidelines",
+                        "Healthy lifestyle maintenance"
+                    ]
+                },
+                "Cystic Fibrosis": {
+                    high: [
+                        "Sweat chloride test for confirmation",
+                        "Referral to CF specialist center",
+                        "Comprehensive treatment plan",
+                        "Regular monitoring of lung function",
+                        "Nutritional management"
+                    ],
+                    moderate: [
+                        "Clinical evaluation for symptoms",
+                        "Consider carrier testing for partner",
+                        "Reproductive counseling",
+                        "Monitor for late-onset manifestations"
+                    ],
+                    low: [
+                        "No specific action required",
+                        "Reproductive counseling if planning family",
+                        "Awareness of potential carrier status"
+                    ]
+                },
+                "Parkinson's Disease": {
+                    high: [
+                        "Neurological evaluation",
+                        "Regular monitoring for symptoms",
+                        "Exercise program focusing on balance and coordination",
+                        "Consider neuroprotective strategies",
+                        "Genetic counseling"
+                    ],
+                    moderate: [
+                        "Annual neurological screening",
+                        "Regular physical activity",
+                        "Cognitive exercises",
+                        "Monitor for early symptoms"
+                    ],
+                    low: [
+                        "General neurological health recommendations",
+                        "Regular exercise",
+                        "Antioxidant-rich diet"
+                    ]
+                },
+                "Colorectal Cancer": {
+                    high: [
+                        "Colonoscopy starting at age 40 or 10 years before youngest affected relative",
+                        "Annual fecal immunochemical testing",
+                        "Consider genetic testing for Lynch syndrome",
+                        "Diet low in processed meats, high in fiber",
+                        "Regular aspirin use after discussing with doctor"
+                    ],
+                    moderate: [
+                        "Colonoscopy every 5 years starting at age 45",
+                        "Lifestyle modifications",
+                        "Increased surveillance if family history changes",
+                        "Consider genetic counseling"
+                    ],
+                    low: [
+                        "Standard colorectal cancer screening",
+                        "Healthy diet and lifestyle",
+                        "Regular physical activity"
+                    ]
+                },
+                "Hypertension": {
+                    high: [
+                        "Regular blood pressure monitoring",
+                        "Sodium-restricted diet (<1500mg/day)",
+                        "Regular aerobic exercise",
+                        "Stress reduction techniques",
+                        "Early pharmacological intervention if needed"
+                    ],
+                    moderate: [
+                        "Monthly blood pressure checks",
+                        "DASH diet",
+                        "Weight management",
+                        "Limit alcohol consumption"
+                    ],
+                    low: [
+                        "Annual blood pressure screening",
+                        "Healthy lifestyle maintenance",
+                        "Monitor for symptoms"
+                    ]
+                }
+            };
+            
+            return actions[diseaseName]?.[riskLevel] || [
+                "Consult with a healthcare provider",
+                "Follow standard screening guidelines",
+                "Maintain healthy lifestyle habits"
+            ];
+        }
+        
+        function downloadDiseaseReport(diseaseName) {
+            const disease = diseasePredictions.find(d => d.name === diseaseName);
+            if (!disease) return;
+            
+            const reportHtml = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>GenoPredict Report - ${disease.name}</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 2cm;
+                            line-height: 1.6;
+                        }
+                        .header {
+                            border-bottom: 2px solid #5e72e4;
+                            padding-bottom: 20px;
+                            margin-bottom: 30px;
+                        }
+                        .risk-badge {
+                            display: inline-block;
+                            padding: 5px 15px;
+                            border-radius: 20px;
+                            font-weight: bold;
+                            margin-left: 15px;
+                            background-color: ${
+                                disease.category === 'high' ? '#f5365c' : 
+                                disease.category === 'moderate' ? '#fb6340' : '#2dce89'
+                            };
+                            color: white;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 20px 0;
+                        }
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f2f2f2;
+                        }
+                        .variant-pathogenic {
+                            color: #f5365c;
+                            font-weight: bold;
+                        }
+                        .variant-benign {
+                            color: #2dce89;
+                        }
+                        .variant-uncertain {
+                            color: #feca57;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>${disease.name} Genetic Risk Report</h1>
+                        <p>Generated by GenoPredict AI on ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    
+                    <h2>Risk Assessment</h2>
+                    <p>
+                        <strong>Risk Level:</strong> 
+                        <span class="risk-badge">${disease.category.toUpperCase()} RISK (${Math.round(disease.risk * 100)}%)</span>
+                    </p>
+                    
+                    <h2>Genetic Findings</h2>
+                    <table>
+                        <tr>
+                            <th>Gene</th>
+                            <th>Variant</th>
+                            <th>Significance</th>
+                            <th>Population Frequency</th>
+                        </tr>
+                        ${disease.variants.map(v => `
+                            <tr>
+                                <td>${v.gene}</td>
+                                <td class="variant-${v.significance}">${v.variant}</td>
+                                <td>${v.significance.toUpperCase()}</td>
+                                <td>${(Math.random() * 5).toFixed(2)}%</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    
+                    <h2>Clinical Interpretation</h2>
+                    <p>${getDiseaseDescription(disease.name)}</p>
+                    
+                    <h2>Recommended Actions</h2>
+                    <ul>
+                        ${getRecommendedActions(disease.name, disease.category).map(action => `
+                            <li>${action}</li>
+                        `).join('')}
+                    </ul>
+                    
+                    <h2>Additional Considerations</h2>
+                    <p>
+                        This report is based on genetic analysis only. Clinical correlation with personal and 
+                        family history is essential for comprehensive risk assessment. These results should be 
+                        interpreted in consultation with a qualified healthcare provider or genetic counselor.
+                    </p>
+                    
+                    <p style="margin-top: 50px; font-size: 0.8em; color: #666;">
+                        Report generated by GenoPredict AI - For clinical use only
+                    </p>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([reportHtml], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `genopredict_${disease.name.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_report.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function downloadFullReport() {
+            const sequence = document.getElementById("sequence").value;
+            const seqName = document.getElementById("seq-name").value || "Unnamed Sequence";
+            
+            const reportHtml = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>GenoPredict Full Report</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 2cm;
+                            line-height: 1.6;
+                        }
+                        .header {
+                            border-bottom: 2px solid #5e72e4;
+                            padding-bottom: 20px;
+                            margin-bottom: 30px;
+                        }
+                        .section {
+                            margin-bottom: 30px;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 20px 0;
+                        }
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 8px;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #f2f2f2;
+                        }
+                        .high-risk {
+                            color: #f5365c;
+                            font-weight: bold;
+                        }
+                        .moderate-risk {
+                            color: #fb6340;
+                        }
+                        .low-risk {
+                            color: #2dce89;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>GenoPredict Comprehensive Genomic Report</h1>
+                        <p>Generated for ${seqName} on ${new Date().toLocaleDateString()}</p>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>Sequence Overview</h2>
+                        <table>
+                            <tr>
+                                <th>Sequence Name</th>
+                                <td>${seqName}</td>
+                            </tr>
+                            <tr>
+                                <th>Sequence Length</th>
+                                <td>${sequence.length} base pairs</td>
+                            </tr>
+                            <tr>
+                                <th>Variants Detected</th>
+                                <td>${Math.floor(sequence.length / 1000)}</td>
+                            </tr>
+                            <tr>
+                                <th>Pathogenic Variants</th>
+                                <td>${Math.floor(sequence.length / 5000)}</td>
+                            </tr>
+                            <tr>
+                                <th>Disease Risks Identified</th>
+                                <td>${diseasePredictions.length}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>Disease Risk Summary</h2>
+                        <table>
+                            <tr>
+                                <th>Disease</th>
+                                <th>Risk Level</th>
+                                <th>Probability</th>
+                                <th>Key Genes</th>
+                            </tr>
+                            ${diseasePredictions.sort((a, b) => b.risk - a.risk).map(d => `
+                                <tr>
+                                    <td>${d.name}</td>
+                                    <td class="${d.category}-risk">${d.category.toUpperCase()}</td>
+                                    <td>${Math.round(d.risk * 100)}%</td>
+                                    <td>${d.genes.join(", ")}</td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>Detailed Variant Analysis</h2>
+                        <table>
+                            <tr>
+                                <th>Gene</th>
+                                <th>Variant</th>
+                                <th>Significance</th>
+                                <th>Frequency</th>
+                            </tr>
+                            ${diseasePredictions.flatMap(d => d.variants).map(v => `
+                                <tr>
+                                    <td>${v.gene}</td>
+                                    <td>${v.variant}</td>
+                                    <td>${v.significance.toUpperCase()}</td>
+                                    <td>${(Math.random() * 5).toFixed(2)}%</td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>Personalized Recommendations</h2>
+                        <h3>Precision Medicine</h3>
+                        <ul>
+                            <li>Statin therapy with atorvastatin for cardiovascular risk reduction</li>
+                            <li>Metformin for potential diabetes prevention</li>
+                            <li>Personalized dosing recommendations for warfarin based on CYP2C9/VKORC1 variants</li>
+                        </ul>
+                        
+                        <h3>Lifestyle Interventions</h3>
+                        <ul>
+                            <li>Mediterranean diet pattern to reduce cardiovascular and Alzheimer's risk</li>
+                            <li>High-intensity interval training 3-4x/week for metabolic health</li>
+                            <li>Sleep optimization (7-8 hours/night) to support cognitive health</li>
+                        </ul>
+                        
+                        <h3>Screening Recommendations</h3>
+                        <ul>
+                            <li>Annual mammogram starting at age 40 (or 10 years earlier than youngest affected relative)</li>
+                            <li>Colonoscopy every 5 years beginning at age 45</li>
+                            <li>Annual cognitive screening beginning at age 55</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="section">
+                        <h2>Disclaimer</h2>
+                        <p>
+                            This report is intended for informational purposes only and does not constitute medical advice. 
+                            The results should be interpreted in conjunction with clinical findings and family history 
+                            by a qualified healthcare professional. Genetic risk does not equate to disease diagnosis, 
+                            and many factors contribute to disease development beyond genetic predisposition.
+                        </p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([reportHtml], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `genopredict_${seqName.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_full_report.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function shareResults() {
+            alert("In a real application, this would allow sharing results via email or social media.");
+        }
+        
+        window.showDiseaseDetails = showDiseaseDetails;
+        window.downloadDiseaseReport = downloadDiseaseReport;
+        window.handleGoogleSignIn = handleGoogleSignIn;
+    </script>
+</body>
+</html>
