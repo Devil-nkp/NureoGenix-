@@ -1,35 +1,38 @@
-# 🧬 NureoGenix – AI-Powered Genomic Analysis & Genetic Research Platform
+# 🧬 NureoGenix – AI-Powered Genetic Disease Predictor
 
-NureoGenix is an intelligent bioinformatics platform designed to revolutionize genomic research and analysis by providing advanced genetic data processing, sequence analysis, and personalized health insights using machine learning and genomic science technology.
+NureoGenix is an intelligent bioinformatics platform designed to revolutionize genetic analysis by predicting disease predisposition from DNA sequences using advanced deep learning models, ensemble machine learning, and comprehensive genetic feature extraction with interactive Gradio interface.
 
 ---
 
 ## Overview
 
-This system combines bioinformatics algorithms with machine learning to deliver comprehensive genomic analysis, DNA sequence processing, and genetic research capabilities through intuitive web interfaces and powerful computational backends.
+This system combines PyTorch neural networks with ensemble methods (XGBoost, Random Forest, SVM) to deliver accurate disease prediction from genetic sequences through intelligent feature extraction and multi-model consensus prediction.
 
-Instead of relying solely on traditional genomic analysis methods, NureoGenix:
+Instead of relying solely on single prediction models, NureoGenix:
 
-1. Processes and analyzes DNA sequences with advanced algorithms
-2. Identifies genetic variations and mutations in real-time
-3. Provides personalized health and ancestry insights
-4. Generates comprehensive genomic reports and visualizations
-5. Implements machine learning for disease predisposition analysis
-6. Offers comparative genomic analysis across populations
-7. Delivers interactive dashboards for genomic data exploration
+1. Extracts advanced genetic features from DNA sequences (11+ dimensional features)
+2. Uses attention-based deep learning for improved accuracy
+3. Implements ensemble voting from multiple AI models
+4. Provides confidence scores and probability distributions
+5. Analyzes sequence characteristics (GC content, entropy, codon bias, etc.)
+6. Generates interactive visualizations with Gradio interface
+7. Delivers consensus predictions across all trained models
 
 ---
 
 ## Architecture
 
-DNA Sample Upload & Processing
-→ Sequence Alignment & Assembly
-→ Genetic Variation Detection
-→ Machine Learning Analysis
-→ Risk Assessment & Health Insights
-→ Report Generation & Visualization
-→ Interactive Dashboard & Analytics
-→ Data Storage & Management
+DNA Sequence Input (ATCG format)
+→ Advanced Feature Extraction (11 Genetic Features)
+→ Feature Scaling & Normalization
+→ Multi-Model Processing:
+  - Deep Learning (Attention + Batch Norm)
+  - XGBoost (Gradient Boosting)
+  - Random Forest (Ensemble)
+  - SVM (Support Vector Machine)
+→ Consensus Prediction & Voting
+→ Visualization & Results
+→ Interactive Gradio Dashboard
 
 ---
 
@@ -37,39 +40,33 @@ DNA Sample Upload & Processing
 
 - **HTML** (66.3%)
 - **Python** (33.7%)
-- **Flask** (Web Framework)
-- **Django** (Alternative Framework)
-- **Biopython** (Bioinformatics Toolkit)
-- **NumPy** (Numerical Computing)
-- **Pandas** (Data Analysis)
+- **PyTorch** (Deep Learning Framework)
+- **TensorFlow / Keras** (Neural Networks)
 - **Scikit-learn** (Machine Learning)
-- **TensorFlow / PyTorch** (Deep Learning)
-- **Plotly** (Data Visualization)
+- **XGBoost** (Gradient Boosting)
+- **Biopython** (Bioinformatics)
+- **Gradio** (Interactive UI)
+- **Pandas** (Data Processing)
+- **NumPy** (Numerical Computing)
 - **Matplotlib & Seaborn** (Visualization)
-- **SQLAlchemy** (Database ORM)
-- **PostgreSQL / MySQL** (Database)
-- **Celery** (Task Processing)
-- **Docker** (Containerization)
+- **Joblib** (Model Serialization)
 
 ---
 
 ## Key Features
 
-- **DNA Sequence Analysis** – Process and analyze raw DNA sequences with advanced algorithms
-- **Genetic Variation Detection** – Identify SNPs, indels, and structural variants
-- **Mutation Identification** – Detect pathogenic and benign mutations
-- **Ancestry Analysis** – Determine genetic ancestry and population origins
-- **Disease Predisposition** – Predict genetic risk for common diseases
-- **Personalized Health Insights** – Generate customized health recommendations
-- **Comparative Genomics** – Compare genomes across individuals and populations
-- **Interactive Visualizations** – Beautiful charts and diagrams for genetic data
-- **Report Generation** – Comprehensive PDF and HTML genomic reports
-- **Multi-Sample Analysis** – Process multiple samples simultaneously
-- **Machine Learning Models** – Advanced predictive analytics for health outcomes
-- **Secure Data Management** – HIPAA-compliant data storage and handling
-- **API Integration** – RESTful APIs for third-party integrations
-- **User Dashboard** – Interactive platform for exploring genetic data
-- **Quality Control** – Built-in QC metrics and data validation
+- **Attention-Based Deep Learning** – Advanced neural network with attention mechanism and batch normalization
+- **Multi-Model Ensemble** – Combines Deep Learning, XGBoost, Random Forest, and SVM
+- **Advanced Feature Extraction** – 11 genetic features including GC content, entropy, codon bias, repeat density, k-mer complexity
+- **Consensus Prediction** – Voting mechanism across all models for robust predictions
+- **Sequence Validation** – Automatic validation for valid DNA sequences (A, T, G, C only)
+- **Confidence Scoring** – Individual model confidence scores and probabilities
+- **Disease Probability Distribution** – Detailed breakdown of disease probabilities
+- **Interactive Visualizations** – 4 interactive plots (features, probabilities, confidence, comparison)
+- **Model Performance Analysis** – Accuracy, Precision, Recall, F1-Score for all models
+- **Early Stopping** – Prevents overfitting during deep learning training
+- **Class Weight Balancing** – Handles imbalanced disease data
+- **Gradio Web Interface** – User-friendly interactive dashboard
 
 ---
 
@@ -100,30 +97,26 @@ venv\Scripts\activate
 source venv/bin/activate
 
 # Install dependencies
-pip install flask django biopython numpy pandas scikit-learn tensorflow plotly matplotlib seaborn sqlalchemy psycopg2 celery
+pip install torch torchvision torchaudio
+pip install xgboost scikit-learn pandas numpy
+pip install biopython matplotlib seaborn
+pip install gradio joblib
 ```
 
-Configure application:
+Download trained models or train new ones:
 
 ```bash
-# Edit config.py or .env
-DATABASE_URL=postgresql://user:password@localhost/nureoGenix
-SECRET_KEY=your_secret_key_here
-FLASK_ENV=development
-DEBUG=true
+# Place your dataset at: ./Data/newdata.csv
+# Dataset should have columns: 'genetic_sequence', 'disease'
+
+# Train models (optional)
+python "model creation.py"
+
+# Run the interactive interface
+python "neuro-genix.py"
 ```
 
-Run the application:
-
-```bash
-# Using Flask
-python app.py
-
-# Or using Django
-python manage.py runserver
-
-# Access at http://localhost:5000 or http://localhost:8000
-```
+Open your browser at `http://localhost:7860`
 
 ---
 
@@ -131,50 +124,12 @@ python manage.py runserver
 
 ```
 NureoGenix-/
-├── frontend/
-│   ├── index.html
-│   ├── dashboard.html
-│   ├── analysis.html
-│   ├── css/
-│   │   ├── style.css
-│   │   └── responsive.css
-│   ├── js/
-│   │   ├── script.js
-│   │   ├── visualization.js
-│   │   └── api.js
-│   └── images/
-├── backend/
-│   ├── app.py (or manage.py for Django)
-│   ├── config.py
-│   ├── requirements.txt
-│   ├── routes/
-│   │   ├── analysis.py
-│   │   ├── upload.py
-│   │   ├── reports.py
-│   │   └── user.py
-│   ├── models/
-│   │   ├── user.py
-│   │   ├── sequence.py
-│   │   └── analysis.py
-│   ├── services/
-│   │   ├── bioinformatics.py
-│   │   ├── ml_prediction.py
-│   │   ├── sequence_alignment.py
-│   │   └── variant_calling.py
-│   ├── utils/
-│   │   ├── file_processing.py
-│   │   ├── data_validation.py
-│   │   └── helpers.py
-│   ├── ml_models/
-│   │   ├── disease_risk_model.h5
-│   │   ├── ancestry_model.h5
-│   │   └── mutation_classifier.h5
-│   └── database/
-│       └── schema.sql
-├── docker/
-│   ├── Dockerfile
-│   └── docker-compose.yml
-└── README.md
+├── neuro-genix.py              # Main interactive Gradio application
+├── model creation.py           # Model training script
+├── index.html                  # Web interface (66.3% HTML)
+├── Data/                       # Dataset directory
+│   └── newdata.csv            # Training dataset with sequences and diseases
+└── README.md                   # Project documentation
 ```
 
 ---
@@ -182,94 +137,76 @@ NureoGenix-/
 ## Usage Example
 
 ```python
-from nureoGenix.services.bioinformatics import SequenceAnalyzer
-from nureoGenix.services.ml_prediction import DiseaseRiskPredictor
+from neuro_genix import SmartGeneticAnalyzer
 
-# Initialize analyzers
-analyzer = SequenceAnalyzer()
-predictor = DiseaseRiskPredictor(model_path='ml_models/disease_risk_model.h5')
+# Initialize analyzer with trained models
+analyzer = SmartGeneticAnalyzer(model_paths={
+    'dl_model': 'models/genetic_analyzer_models_dl_model.pth',
+    'xgboost_model': 'models/genetic_analyzer_models_xgboost_model.pkl',
+    'random_forest_model': 'models/genetic_analyzer_models_random_forest_model.pkl',
+    'svm_model': 'models/genetic_analyzer_models_svm_model.pkl',
+    'scalers': 'models/genetic_analyzer_models_scalers.pkl',
+    'encoders': 'models/genetic_analyzer_models_encoders.pkl'
+})
 
-# Load DNA sequence
-dna_sequence = "ATCGATCGATCG..."
+# Predict disease from DNA sequence
+sequence = "ATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG"
+results = analyzer.predict_disease(sequence)
 
-# Perform sequence analysis
-variations = analyzer.detect_variations(dna_sequence)
-mutations = analyzer.identify_mutations(variations)
-
-# Predict disease risk
-risk_assessment = predictor.predict_risk(dna_sequence)
-
-# Generate report
-report = analyzer.generate_report(
-    sequence=dna_sequence,
-    variations=variations,
-    mutations=mutations,
-    risk_assessment=risk_assessment
-)
-
-print(report)
+print(f"Consensus Prediction: {results['consensus_prediction']}")
+print(f"Confidence: {results['best_model_confidence']:.1%}")
+print(f"Disease Probabilities: {results['disease_probabilities']}")
 ```
 
 ---
 
-## API Endpoints
+## Genetic Features Extracted
 
-```
-# Sequence Analysis
-POST   /api/analyze              # Upload and analyze DNA sequence
-GET    /api/analysis/{id}        # Get analysis results
-DELETE /api/analysis/{id}        # Delete analysis
-
-# Genetic Reports
-GET    /api/reports/{id}         # Get genomic report
-POST   /api/reports/export       # Export report as PDF
-
-# Variants
-GET    /api/variants/{id}        # Get detected variants
-GET    /api/variants/search      # Search variants database
-
-# Disease Risk
-GET    /api/risk/assessment/{id} # Get disease risk assessment
-GET    /api/risk/health-insights # Get personalized health insights
-
-# Ancestry
-GET    /api/ancestry/{id}        # Get ancestry analysis
-GET    /api/ancestry/comparison  # Compare with population data
-```
+1. **GC Content** (%) - Percentage of G and C bases
+2. **AT Content** (%) - Percentage of A and T bases
+3. **Sequence Length** - Total number of bases
+4. **Codon Bias** - Codon usage variation
+5. **Repeat Density** - Frequency of repeated sequences
+6. **Mutation Density** - CpG islands and mutation hotspots
+7. **Entropy** - Shannon entropy of sequence
+8. **CG Content** - Specific C and G content
+9. **Purine Content** - A and G content percentage
+10. **K-mer Complexity** - Diversity of 3-mers
+11. **Palindromic Density** - Frequency of palindromic sequences
 
 ---
 
-## Machine Learning Models
+## Model Performance
 
-- **Disease Risk Model**: Predicts genetic predisposition to diseases (~92% accuracy)
-- **Ancestry Classifier**: Determines geographic ancestry origins (~96% accuracy)
-- **Mutation Classifier**: Classifies mutations as benign/pathogenic (~94% accuracy)
-- **Sequence Predictor**: Predicts phenotypic traits from genotype (~89% accuracy)
+- **Deep Learning Model**: Attention-based, 5-layer neural network with batch normalization
+- **XGBoost Model**: 1000 trees with early stopping, optimized hyperparameters
+- **Random Forest Model**: 100 trees with max depth 10
+- **SVM Model**: RBF kernel with probability estimates
+
+Expected Accuracy: 85-95% (varies with dataset)
 
 ---
 
 ## Future Improvements
 
-- Implement pharmacogenomics analysis
-- Add cancer genomics and tumor profiling
-- Integrate with medical imaging analysis
-- Develop rare disease diagnosis module
-- Implement pregnancy genetic screening
-- Add microbiome analysis capabilities
-- Integrate with wearable health devices
-- Develop mobile app for result access
-- Implement telemedicine consultations
-- Add multi-language genetic counseling
-- Integrate with global genetic databases
-- Implement blockchain for data security
+- Add pathway analysis and gene ontology integration
+- Implement SHAP values for model interpretability
+- Add support for RNA sequences and protein predictions
+- Develop RESTful API for integration
+- Implement real-time model retraining
+- Add database integration for variant storage
+- Create mobile app for sequence analysis
+- Implement multi-threading for batch processing
+- Add support for VCF file format
+- Integrate with external bioinformatics databases
 
 ---
 
 ## Author
 
 **Naveenkumar G** (Devil-nkp)
-- AI Engineer
-- ML & Data Science Specialist
+- AI / ML Engineer
+- Bioinformatics Developer
 
 ---
 
@@ -279,4 +216,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-**Built with ❤️ to unlock the power of genomics and advance personalized medicine**
+**Built with ❤️ to advance personalized genomic medicine and disease prediction**
